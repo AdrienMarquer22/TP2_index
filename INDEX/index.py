@@ -39,20 +39,17 @@ class Index():
 
 
     def create_index_pos(self):
-        self.title_tokenize
-        self.pos={}
-        docn=1
-        for list_token in self.title_tokenize:
-            for i in range(len(list_token)):
-                print(i)
-                if list_token[i] not in self.pos:
-                    self.pos[list_token[i]] = {docn:i}
+        self.index_pos={}
+        for i,title in enumerate(self.title_tokenize):
+            for pos,word in enumerate(title):
+                if word in self.index_pos and i in self.index_pos[word]:
+                    self.index_pos[word][i].append(pos)
                 else:
-                    if docn in self.pos[list_token[i]]:
-                        self.pos[list_token[i]][docn] = i
-                    else :
-                        self.pos[list_token[i]] = {docn:i}
-            docn +=1
+                    self.index_pos.setdefault(word,{}).setdefault(i,[pos])
+
+
+        
+
 
 
     def statistique(self):
@@ -82,6 +79,9 @@ class Index():
         with open(name, 'w') as outfile:
             json.dump(self.index_no_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
 
+    def save_index_pos(self,name):
+        with open(name, 'w') as outfile:
+            json.dump(self.index_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
     def save_statistique(self,name):
         with open(name, 'w') as outfile:
             json.dump(self.dict_statistique, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)

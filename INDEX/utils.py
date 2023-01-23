@@ -3,6 +3,7 @@ import requests
 import socket
 import re
 import json
+import numpy as np 
 
 def load_page(url):
     socket.setdefaulttimeout(2)
@@ -26,3 +27,12 @@ def clean_test(string):
 def flatten_list(lists):
     return [item for sublist in lists for item in sublist]
 
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)

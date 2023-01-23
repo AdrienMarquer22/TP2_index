@@ -11,8 +11,12 @@ if __name__=="__main__":
 
 
     test.tokenisation()
-    print(test.title_tokenize)
+    test.title_tokenize.append(['karine', 'lacombe', 'karine'])
+
+    print( test.title_tokenize)
 
     test.create_index_pos()
 
-    print(test.pos)
+    print(test.index_pos)
+
+    test.save_index_pos('test.json')
