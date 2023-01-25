@@ -29,7 +29,6 @@ class Index():
         for link in self.title_list:
             link_clean = clean_text(link)
             self.title_tokenize.append(tokenize(link_clean))
-        self.title_tokenize.append(['allez', 'allons', 'circuit',"allait"])
         self.title_tokenize_flatten = flatten_list(self.title_tokenize)
 
 
@@ -42,12 +41,12 @@ class Index():
 
     def create_index_pos(self):
         self.index_pos={}
-        for i,title in enumerate(self.title_tokenize):
+        for doc_id,title in enumerate(self.title_tokenize):
             for pos,word in enumerate(title):
-                if word in self.index_pos and i in self.index_pos[word]:
-                    self.index_pos[word][i].append(pos)
+                if word in self.index_pos and doc_id in self.index_pos[word]:
+                    self.index_pos[word][doc_id].append(pos)
                 else:
-                    self.index_pos.setdefault(word,{}).setdefault(i,[pos])
+                    self.index_pos.setdefault(word,{}).setdefault(doc_id,[pos])
 
 
     def create_stemmer_index_no_pos(self):

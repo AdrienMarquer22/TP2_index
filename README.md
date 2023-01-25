@@ -28,6 +28,9 @@ There is 6 arguments to use :
 
 
 ```bash
+# Launch the tests 
+python3 -m unittest discover test/
+#
 python3 main.py
 
 ```
