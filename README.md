@@ -13,13 +13,13 @@ pip install -r requirements.txt
 
 Launch with the command 
 ```bash
-python3 main.py [--type type][--nopos][--pos][--stem_nopos][--name name]
+python3 main.py [--type type][--npythonopos][--pos][--stem_nopos][--name name]
 ```
 
 There is 6 arguments to use :
 
-- `--type` : The html tag thatuou want to use (`default=title`)
-- `--nopos` : If you want non positionnal index (`default=True`)
+- `--type` : The html tag thaou want to use (`default=title`)
+- `--nopos` : If you want non positionnal index (`default=False`)
 - `--pos` : If you want positionnal index (`defaul="False"`)
 - `--stem_nopos` : If you want non positionnal index with stemmer (`defaul="False"`)
 - `--name` : name for the file to save
@@ -31,7 +31,13 @@ There is 6 arguments to use :
 # Launch the tests 
 python3 -m unittest discover test/
 #
-python3 main.py
+python3 main.py --type title --nopos --name title.non_pos_index
+#
+python3 main.py --type title --pos --name title.pos_index
+#
+python3 main.py --type title --stem_nopos --name mon_stemmer.title.non_pos_index
+# with h1 cintent
+python3 main.py --type h1 --stem_nopos --name mon_stemmer.h1.non_pos_index
 
 ```
 

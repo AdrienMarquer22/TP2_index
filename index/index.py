@@ -4,6 +4,9 @@ import pandas as pd
 from numpyencoder import NumpyEncoder
 import numpy as np
 from nltk.stem.snowball import SnowballStemmer
+import socket
+
+socket.setdefaulttimeout(1)
 
 class Index():
     def __init__(self,type='title') -> None:
@@ -18,11 +21,18 @@ class Index():
         self.liste_urls = json.load(open(path))
 
     def get_title_list(self):
-        for elem in self.liste_urls[0:5]:
+        i=0
+        for elem in self.liste_urls:
+            print((i/500)*100," %   Scraping -> ",elem)
+            i+=1
             soup = load_page(elem)
             if soup : 
-                self.title_list.append(soup.find(self.type).string)
+                try: #when the tag self.type not in the page 
+                    self.title_list.append(soup.find(self.type).string)
+                except:
+                    self.liste_not_valid_url.append(elem)
             else:
+                print("pas ok :",elem)
                 self.liste_not_valid_url.append(elem)
 
     def tokenisation(self):
@@ -34,12 +44,16 @@ class Index():
 
 
     def create_index_no_pos(self):
+        self.get_title_list()
+        self.tokenisation()
         df = pd.DataFrame(self.title_tokenize_flatten,columns=["token"])
         df2=df.groupby('token')['token'].count()
         self.index_no_pos=dict(df2)
 
 
     def create_index_pos(self):
+        self.get_title_list()
+        self.tokenisation()
         self.index_pos={}
         for doc_id,title in enumerate(self.title_tokenize):
             for pos,word in enumerate(title):
@@ -50,7 +64,8 @@ class Index():
 
 
     def create_stemmer_index_no_pos(self):
-
+        self.get_title_list()
+        self.tokenisation()
         stem_word = SnowballStemmer(language="french")
         token_stem= [stem_word.stem(word) for word in self.title_tokenize_flatten]
         df = pd.DataFrame(token_stem,columns=["token"])
@@ -63,7 +78,7 @@ class Index():
     def statistique(self):
         number_of_doc = len(self.title_list)
         number_of_tokens = len(self.title_tokenize_flatten)
-        number_of_token_unique = len(self.index_no_pos)
+        number_of_token_unique = len(set(self.title_tokenize_flatten))
         average_of_token = number_of_tokens/number_of_doc
 
         number_of_token_per_doc = [len(elem) for elem in self.title_tokenize]
@@ -72,7 +87,7 @@ class Index():
                             "Number of total tokens":number_of_tokens,
                             "Number of unique tokens":number_of_token_unique,
                             "Average of token pre document":average_of_token,
-                            "Variance of the number of token per dicument":variance_of_token}
+                            "Variance of the number of token":variance_of_token}
 
 
 

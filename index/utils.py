@@ -4,24 +4,28 @@ import socket
 import re
 import json
 import numpy as np 
+socket.setdefaulttimeout(1)
 
 def load_page(url):
-    socket.setdefaulttimeout(2)
-
     try : # If the page load
-        page = requests.get(url)
+        page = requests.get(url, timeout=5)
         if page.ok:
             return BeautifulSoup(page.content, 'html.parser')
         else:
             return False
-    except: # If the page d'ont load
+    except: # If the page don't load
         return False
 
 def tokenize(elem):
     return elem.split()
 
 def clean_text(string):
-    return re.sub(r'[^\w\s]', '', string.lower())
+    clean=''
+    try:
+        clean = re.sub(r'[^\w\s]', '', string.lower())
+    except:
+        pass
+    return clean
 
 
 def flatten_list(lists):
