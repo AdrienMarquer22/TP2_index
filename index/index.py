@@ -1,33 +1,35 @@
 import json
-from INDEX.utils import load_page,tokenize,clean_test,flatten_list
+from index.utils import load_page,tokenize,clean_text,flatten_list
 import pandas as pd
 from numpyencoder import NumpyEncoder
 import numpy as np
-
+from nltk.stem.snowball import SnowballStemmer
 
 class Index():
-    def __init__(self) -> None:
+    def __init__(self,type='title') -> None:
         self.liste_urls=[]
         self.title_list=[]
         self.liste_not_valid_url=[]
         self.title_tokenize=[]
         self.index_no_pos=[]
+        self.type=type
 
-    def load_json(self,path="DATA/crawled_urls.json"):
+    def load_json(self,path="data/crawled_urls.json"):
         self.liste_urls = json.load(open(path))
 
     def get_title_list(self):
         for elem in self.liste_urls[0:5]:
             soup = load_page(elem)
             if soup : 
-                self.title_list.append(soup.find('title').string)
+                self.title_list.append(soup.find(self.type).string)
             else:
                 self.liste_not_valid_url.append(elem)
 
     def tokenisation(self):
         for link in self.title_list:
-            link_clean = clean_test(link)
+            link_clean = clean_text(link)
             self.title_tokenize.append(tokenize(link_clean))
+        self.title_tokenize.append(['allez', 'allons', 'circuit',"allait"])
         self.title_tokenize_flatten = flatten_list(self.title_tokenize)
 
 
@@ -48,6 +50,13 @@ class Index():
                     self.index_pos.setdefault(word,{}).setdefault(i,[pos])
 
 
+    def create_stemmer_index_no_pos(self):
+
+        stem_word = SnowballStemmer(language="french")
+        token_stem= [stem_word.stem(word) for word in self.title_tokenize_flatten]
+        df = pd.DataFrame(token_stem,columns=["token"])
+        df2=df.groupby('token')['token'].count()
+        self.stemmer_index_no_pos=dict(df2)
         
 
 
@@ -73,16 +82,19 @@ class Index():
 
 
 
-
-
-    def save_index_no_pos(self,name):
+    def save_index_no_pos(self,name="title.non_pos_index.json"):
         with open(name, 'w') as outfile:
             json.dump(self.index_no_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
 
-    def save_index_pos(self,name):
+    def save_index_pos(self,name="title.pos_index.json"):
         with open(name, 'w') as outfile:
             json.dump(self.index_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
-    def save_statistique(self,name):
+
+    def save_stemmer_index_no_pos(self,name="mon_stemmer.title.non_pos_index.json"):
+        with open(name, 'w') as outfile:
+            json.dump(self.stemmer_index_no_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
+
+    def save_statistique(self,name='metadata.json'):
         with open(name, 'w') as outfile:
             json.dump(self.dict_statistique, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
 

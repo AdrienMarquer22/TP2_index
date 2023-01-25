@@ -20,7 +20,7 @@ def load_page(url):
 def tokenize(elem):
     return elem.split()
 
-def clean_test(string):
+def clean_text(string):
     return re.sub(r'[^\w\s]', '', string.lower())
 
 
