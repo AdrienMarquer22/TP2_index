@@ -1,10 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
-import socket
 import re
 import json
 import numpy as np 
-socket.setdefaulttimeout(1)
 
 def load_page(url):
     try : # If the page load

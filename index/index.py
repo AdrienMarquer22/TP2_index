@@ -4,9 +4,7 @@ import pandas as pd
 from numpyencoder import NumpyEncoder
 import numpy as np
 from nltk.stem.snowball import SnowballStemmer
-import socket
 
-socket.setdefaulttimeout(1)
 
 class Index():
     def __init__(self,type='title') -> None:
@@ -32,7 +30,7 @@ class Index():
                 except:
                     self.liste_not_valid_url.append(elem)
             else:
-                print("pas ok :",elem)
+                print("Couldn't scrap :",elem)
                 self.liste_not_valid_url.append(elem)
 
     def tokenisation(self):
