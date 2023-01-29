@@ -1,7 +1,7 @@
 {
-    "Number of document": 429,
-    "Number of total tokens": 2793,
-    "Number of unique tokens": 1622,
-    "Average of token pre document": 6.510489510489511,
-    "Variance of the number of token": 15.252220972500693
+    "Number of document": 675,
+    "Number of total tokens": 3469,
+    "Number of unique tokens": 761,
+    "Average of token pre document": 5.139259259259259,
+    "Variance of the number of token": 13.193413230951897
 }

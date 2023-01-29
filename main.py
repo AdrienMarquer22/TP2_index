@@ -15,32 +15,27 @@ if __name__=="__main__":
 
     parser.add_argument('--nopos', action='store_true',default=False)
 
-    parser.add_argument('--stem_nopos', action='store_true',default=False)
+    parser.add_argument('--stem', action='store_true',default=False)
 
 
 
     args = parser.parse_args()
 
-    index=Index(args.type)
+    index=Index(args.type,args.stem)
     index.load_json()
 
     if args.pos:
         index.create_index_pos()
-        index.save_index_pos(args.name + ".json")
+        index.save_index_pos(args.name + ".pos_index.json")
         index.statistique()
         index.save_statistique("metadata.json")
-    elif args.nopos:
+    if args.nopos:
         index.create_index_no_pos()
-        index.save_index_no_pos(args.name + ".json")
+        index.save_index_no_pos(args.name + ".non_pos_index.json")
         index.statistique()
         index.save_statistique("metadata.json")
-    elif args.stem_nopos:
-        index.create_stemmer_index_no_pos()
-        index.save_stemmer_index_no_pos(args.name + ".json")
-        index.statistique()
-        index.save_statistique("metadata.json")
-    else:
-        print("Select on option --pos or --nopos or --stem_nopos")
+    if not args.nopos and not args.pos:
+        print("Select at least one option --pos or --nopos")
 
     # test=Index()
 

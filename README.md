@@ -13,7 +13,12 @@ pip install -r requirements.txt
 
 Launch with the command 
 ```bash
-python3 main.py [--type type][--npythonopos][--pos][--stem_nopos][--name name]
+python3 main.py 
+    [--type type]
+    [--nopos]
+    [--pos]
+    [--stems]
+    [--name name]
 ```
 
 There is 6 arguments to use :
@@ -21,7 +26,7 @@ There is 6 arguments to use :
 - `--type` : The html tag thaou want to use (`default=title`)
 - `--nopos` : If you want non positionnal index (`default=False`)
 - `--pos` : If you want positionnal index (`defaul="False"`)
-- `--stem_nopos` : If you want non positionnal index with stemmer (`defaul="False"`)
+- `--stem` : If you want to stemm your token(`defaul="False"`)
 - `--name` : name for the file to save
 
 
@@ -30,14 +35,14 @@ There is 6 arguments to use :
 ```bash
 # Launch the tests 
 python3 -m unittest discover test/
-#
-python3 main.py --type title --nopos --name title.non_pos_index
-#
-python3 main.py --type title --pos --name title.pos_index
-#
-python3 main.py --type title --stem_nopos --name mon_stemmer.title.non_pos_index
-# with h1 cintent
-python3 main.py --type h1 --stem_nopos --name mon_stemmer.h1.non_pos_index
+#Non pos index
+python3 main.py --type title --nopos --name title
+#Pos index
+python3 main.py --type title --pos --name title
+#non pos index with stemmer
+python3 main.py --type title  --nopos --stem --name mon_stemmer.title
+# Non po and pos with h1 content and stemmer
+python3 main.py --type h1 --nopos --stem --name mon_stemmer.h1
 
 ```
 
@@ -69,16 +74,12 @@ index.create_index_no_pos()
 # Create a dictionary-based index (with positional information)
 index.create_index_pos()
 
-# Create a stemmer index (no positional information)
-index.create_stemmer_index_no_pos()
-
 # Compute statistics about the index
 index.statistique()
 
 # Save the index to a file
 index.save_index_no_pos("title.non_pos_index.json")
 index.save_index_pos("title.pos_index.json")
-index.save_stemmer_index_no_pos("mon_stemmer.title.non_pos_index.json")
 # Save the statistique
 index.save_statistique()
 ```
@@ -88,6 +89,7 @@ index.save_statistique()
 The `Index` class takes one optional parameter:
 
 + `type`: Specifies the type of element to extract from each page (default is 'title').
++ `stem` If you want to use a stemmer on yout token.
 
 #### Methods
 
@@ -98,4 +100,3 @@ The `Index` class provides the following methods:
 + `tokenisation()`: Tokenize the titles and flatten the list of lists.
 + `create_index_no_pos()`: Create a dictionary-based index (no positional information).
 + `create_index_pos()`: Create a dictionary-based index (with positional information).
-+ `create_stemmer_index_no_pos()`: Create a stemmer index

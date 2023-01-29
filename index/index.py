@@ -7,21 +7,24 @@ from nltk.stem.snowball import SnowballStemmer
 
 
 class Index():
-    def __init__(self,type='title') -> None:
+    def __init__(self,type:str='title',stem:bool=False) -> None:
         self.liste_urls=[]
         self.title_list=[]
         self.liste_not_valid_url=[]
         self.title_tokenize=[]
-        self.index_no_pos=[]
         self.type=type
+        self.stem= stem
+        if self.stem:
+            self.stem_word = SnowballStemmer(language="french")
 
-    def load_json(self,path="data/crawled_urls.json"):
+    def load_json(self,path:str="data/crawled_urls.json"):
         self.liste_urls = json.load(open(path))
 
     def get_title_list(self):
+        maxx=len(self.liste_urls)
         i=0
         for elem in self.liste_urls:
-            print((i/500)*100," %   Scraping -> ",elem)
+            print((i/maxx)*100," %   Scraping -> ",elem)
             i+=1
             soup = load_page(elem)
             if soup : 
@@ -36,7 +39,10 @@ class Index():
     def tokenisation(self):
         for link in self.title_list:
             link_clean = clean_text(link)
-            self.title_tokenize.append(tokenize(link_clean))
+            if self.stem:
+                self.title_tokenize.append([self.stem_word.stem(word) for word in tokenize(link_clean)] )
+            else:
+                self.title_tokenize.append(tokenize(link_clean))
         self.title_tokenize_flatten = flatten_list(self.title_tokenize)
 
 
@@ -44,9 +50,13 @@ class Index():
     def create_index_no_pos(self):
         self.get_title_list()
         self.tokenisation()
-        df = pd.DataFrame(self.title_tokenize_flatten,columns=["token"])
-        df2=df.groupby('token')['token'].count()
-        self.index_no_pos=dict(df2)
+        self.index_no_pos={}
+        for doc_id,title in enumerate(self.title_tokenize):
+            for _,word in enumerate(title):
+                if word in self.index_no_pos and doc_id in self.index_no_pos[word]:
+                    self.index_no_pos[word][doc_id] += 1 
+                else:
+                    self.index_no_pos.setdefault(word,{}).setdefault(doc_id,1)
 
 
     def create_index_pos(self):
@@ -61,15 +71,6 @@ class Index():
                     self.index_pos.setdefault(word,{}).setdefault(doc_id,[pos])
 
 
-    def create_stemmer_index_no_pos(self):
-        self.get_title_list()
-        self.tokenisation()
-        stem_word = SnowballStemmer(language="french")
-        token_stem= [stem_word.stem(word) for word in self.title_tokenize_flatten]
-        df = pd.DataFrame(token_stem,columns=["token"])
-        df2=df.groupby('token')['token'].count()
-        self.stemmer_index_no_pos=dict(df2)
-        
 
 
 
@@ -101,10 +102,6 @@ class Index():
     def save_index_pos(self,name="title.pos_index.json"):
         with open(name, 'w') as outfile:
             json.dump(self.index_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
-
-    def save_stemmer_index_no_pos(self,name="mon_stemmer.title.non_pos_index.json"):
-        with open(name, 'w') as outfile:
-            json.dump(self.stemmer_index_no_pos, outfile,cls=NumpyEncoder, ensure_ascii=False,indent=4)
 
     def save_statistique(self,name='metadata.json'):
         with open(name, 'w') as outfile:
