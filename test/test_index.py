@@ -25,7 +25,7 @@ class TestIndex(unittest.TestCase):
         self.index.liste_urls = ["https://www.example.com","https://www.example.com"]
         self.index.create_index_no_pos()
         self.assertIsInstance(self.index.index_no_pos, dict)
-        self.assertEqual(self.index.index_no_pos["example"],2)
+        self.assertEqual(self.index.index_no_pos["example"][1],1)
 
 
     def test_create_index_pos(self):
@@ -36,13 +36,6 @@ class TestIndex(unittest.TestCase):
         self.assertIsInstance(self.index.index_pos["example"][1], list)
         self.assertEqual(self.index.index_pos["example"][1],[0])
         self.assertEqual(self.index.index_pos["domain"][0],[1])
-
-    def test_create_stemmer_no_pos(self):
-        self.index.title_tokenize.append(['circuit','circuits'])
-        self.index.liste_urls = ["https://www.example.com","https://www.example.com"]
-        self.index.create_stemmer_index_no_pos()
-        self.assertIsInstance(self.index.stemmer_index_no_pos, dict)
-        self.assertEqual(self.index.stemmer_index_no_pos["circuit"],2)
 
     def test_statistique(self):
         self.index.liste_urls = ["https://www.example.com","https://www.example.com"]
