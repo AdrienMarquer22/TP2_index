@@ -89,7 +89,7 @@ index.save_statistique()
 The `Index` class takes one optional parameter:
 
 + `type`: Specifies the type of element to extract from each page (default is 'title').
-+ `stem` If you want to use a stemmer on yout token.
++ `stem` If you want to use a stemmer on your token.
 
 #### Methods
 
