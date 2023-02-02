@@ -42,7 +42,7 @@ python3 main.py --type title --pos --name title
 #non pos index with stemmer
 python3 main.py --type title  --nopos --stem --name mon_stemmer.title
 # Non po and pos with h1 content and stemmer
-python3 main.py --type h1 --nopos --stem --name mon_stemmer.h1
+python3 main.py --type h1 --pos --nopos --stem --name mon_stemmer.h1
 
 ```
 
